@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewData["Title"] = "Pantalla Carrito";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Estilos{
+    <link rel="stylesheet" href="~/css/vistas/pantallaCarrito.css" />
+}
+
+<section class="pantallaCarrito">
+    <div class="bloquePrincipal">
+        <button type="button" class="btnVolver">
+            <i class="fa-solid fa-arrow-right fa-rotate-180 iconoFlecha"></i>
+            <span class="textoBtnVolver">Volver</span>
+        </button>
+        <div class="seccionProductos ">
+
+        </div>
+    </div>
+    <div class="seccionPedido ">
+        <p class="tituloPedido">Resumen de pedido</p>
+        <div class="infoPedido">
+            <div class="divCampos">
+
+            </div>
+            <div class="divTotales">
+                <p>Total: </p>
+                <p class="txtTotalResumen">$ 0</p>
+            </div>
+        </div>
+        <div class="divBotones">
+            <button type="button" class="btnLimpiar">
+                <i class="fas fa-trash-alt iconoTrash"></i>
+                Limpiar Carrito
+            </button>
+            <button type="button" class="btnPedido">
+                <i class="fa-brands fa-whatsapp iconoWsp"></i>
+                Hacer Pedido
+            </button>
+        </div>
+        
+    </div>
+</section>
+
+@section Scripts{
+    <script src="~/js/vistas/pantallaCarrito.js"></script>
+}

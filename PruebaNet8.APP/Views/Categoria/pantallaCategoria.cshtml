@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Pantalla Categoria";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Estilos {
+    <link rel="stylesheet" href="~/css/vistas/pantallaCategoria.css" />
+    <link rel="stylesheet" href="~/vendor/bootstrap/css/bootstrap.min.css" />
+}
+
+<section class="pantallaCategoria">
+    <div class="categoriaFiltrosContainer">
+        <button type="button" class="btnVolver">
+            <i class="fa-solid fa-arrow-right fa-rotate-180 iconoFlecha"></i>
+            <span class="textoBtnVolver">Volver</span>
+        </button>
+        <h2 class="tituloCategoria"></h2>
+        <div class="seccionFiltros">
+            <select class="filtroOrden">
+                <option value="-" selected>Orden Aleatorio</option>
+                <option class="opcionMenorPrecio" value="asc">Menor Precio</option>
+                <option class="opcionMayorPrecio" value="desc">Mayor Precio</option>
+            </select>
+            <select class="filtroEstado">
+                <option selected value="1">Activo</option>
+                <option value="0">No Activo</option>
+            </select>
+        </div>
+    </div>
+    <div class="productosContainerCategoria">
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/vistas/pantallaCategoria.js"></script>
+}

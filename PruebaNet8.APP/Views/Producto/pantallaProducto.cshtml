@@ -1,0 +1,170 @@
+﻿@{
+    ViewData["Title"] = "Pantalla Producto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Estilos {
+    <link rel="stylesheet" href="~/css/vistas/pantallaProducto.css" />
+    <link rel="stylesheet" href="~/vendor/bootstrap/css/bootstrap.min.css" />
+}
+
+<section class="pantallaProducto">
+
+    <div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content bg-white">
+                <div class="modal-header bg-dark">
+                    <h6 class="m-0 font-weight-bold text-white">Detalle Producto</h6>
+                    <button class="close bg-dark" type="button" data-dismiss="modal" aria-label="Close">
+                        <span class="text-white" aria-hidden="true">X</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <input type="hidden" value="0" id="txtId">
+                        <div class="d-flex flex-column gap-3" id="contenidoModal">
+
+                            <div class="form-row d-flex flex-row justify-content-evenly">
+                                <div class="form-group col-sm-6 gap-2 d-flex flex-column">
+                                    <label for="txtNombre">Nombre</label>
+                                    <input type="text" class="form-control form-control input-validar" id="txtNombre" name="Nombre">
+                                </div>
+                                <div class="form-group col-sm-4 gap-2 d-flex flex-column">
+                                    <label for="cboCategoria">Categoria</label>
+                                    <select class="form-control input-validar text-center" id="cboCategoria">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-12 gap-2 d-flex justify-content-center">
+                                <div class="form-group col-sm-10 gap-2 d-flex flex-column justify-content-center">
+                                    <label for="txtDescripcion">Descripcion</label>
+                                    <textarea class="form-control form-control input-validar" id="txtDescripcion" name="Descripcion" style="resize: none;"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-row d-flex justify-content-evenly">
+                                <div class="form-group col-sm-6 gap-2 d-flex flex-column">
+                                    <label for="txtMarca">Marca</label>
+                                    <input type="text" class="form-control form-control input-validar" id="txtMarca" name="Marca">
+                                </div>
+                                <div class="form-group col-sm-3 gap-2 d-flex flex-column">
+                                    <label for="txtPrecio">Precio</label>
+                                    <input type="text" class="form-control input-validar" id="txtPrecio" name="Precio" />
+                                </div>
+
+                            </div>
+                            <div class="form-row d-flex justify-content-evenly">
+
+                                <div class="form-group col-sm-2 gap-2 d-flex flex-column">
+                                    <label for="txtStock">Stock</label>
+                                    <input type="text" class="form-control input-validar" id="txtStock" name="Stock" />
+                                </div>
+                                <div class="form-group col-sm-2 gap-2 d-flex flex-column">
+                                    <label for="cboEstado">Estado</label>
+                                    <select class="form-control input-validar text-center" id="cboEstado">
+                                        <option value="1">Activo</option>
+                                        <option value="0">No Activo</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" type="button" id="btnGuardar">Guardar</button>
+                    <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalImg" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content bg-white">
+                <div class="modal-header bg-dark">
+                    <h6 class="m-0 font-weight-bold text-white">Editar Imagen</h6>
+                    <button class="close bg-dark" type="button" data-dismiss="modal" aria-label="Close">
+                        <span class="text-white" aria-hidden="true">X</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <input type="hidden" value="0" id="txtId">
+                        <div class="d-flex flex-column gap-3" id="contenidoModal">
+                            <div class="form-group col-sm-12 gap-2 d-flex justify-content-evenly">
+                                <label for="txtImagen">Imagen</label>
+                                <input type="file" class="form-control-file" id="txtImagen" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" type="button" id="btnEditarImg">Guardar</button>
+                    <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bloqueIzquierda">
+
+        <button type="button" class="btnVolver">
+            <i class="fa-solid fa-arrow-right fa-rotate-180 iconoFlecha"></i>
+            <span class="textoBtnVolver">Volver</span>
+        </button>
+
+        <div class="bloqueImagenes">   
+            @* <p class="agregarImagen">+</p> *@
+        </div>
+        @* <div class="divOpciones">
+            <i class="editarImagen fas fa-pencil-alt" title="Editar Imagen"></i>
+            <i class="eliminarImagen fas fa-trash-alt" title="Editar Imagen"></i>
+        </div> *@
+        
+    </div>
+    <div class="divImgGrande">
+
+        <img class="imgGrande" />
+    </div>
+    <div class="detallesProducto">
+
+        <p class="nombreProducto"></p>
+        <p class="descripcionProducto"></p>
+
+        <div class="infoProducto">
+
+            <div class="divStockCantidad">
+                <p class="precioProducto"></p>
+                <p class="stockProducto"></p>
+                <div class="opciones">
+                    <i class="btnEditar fas fa-pencil-alt" title="Editar Producto"></i>
+                    <i class="btnEliminar fas fa-trash-alt" title="Eliminar Producto"></i>
+                </div>
+            </div>
+
+            <div class="divPrecioCarrito">
+                
+                <span class="cantidadProducto">
+
+                    <i class="fa-solid fa-minus iconoMenos" title="Sumar cantidad de producto"></i>
+                    <p class="textCantidadProducto"></p>
+                    <i class="fa-solid fa-plus iconoMas" title="Restar cantidad de producto"></i>
+
+                </span>
+
+                <button type="button" class="btnCarrito">
+                    Agregar al carrito
+                    <i class="fa-solid fa-cart-shopping iconoCarrito"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/vistas/pantallaProducto.js"></script>
+}

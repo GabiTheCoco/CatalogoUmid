@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Categorias";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Estilos {
+    <link rel="stylesheet" href="~/css/vistas/seccionCategorias.css" />
+    <link rel="stylesheet" href="~/vendor/bootstrap/css/bootstrap.min.css" />
+}
+
+<section class="seccionCategorias">
+
+    <div class="seccionFiltros">
+        <p class="opcionCrear">Crear Categoria</p>
+        <select class="filtroTipos">
+            <option class="opcionCategorias" selected value="Categorias">Categorias</option>
+            <option class="opcionProductos" value="Productos">Productos</option>
+        </select>
+
+        <select class="filtroOrden">
+            <option value="-" selected>Orden Aleatorio</option>
+            <option class="opcionMenorPrecio" value="asc">Menor Precio</option>
+            <option class="opcionMayorPrecio" value="desc">Mayor Precio</option>
+        </select>
+@*         <select class="filtroEstado">
+            <option selected value="1">Activo</option>
+            <option value="0">No Activo</option>
+        </select> *@
+    </div>
+
+    <div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content bg-white">
+                <div class="modal-header bg-dark">
+                    <h6 class="m-0 font-weight-bold text-white">Detalles Categorias</h6>
+                    <button class="close bg-dark" type="button" data-dismiss="modal" aria-label="Close">
+                        <span class="text-white" aria-hidden="true">X</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <input type="hidden" value="0" id="txtId">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-row d-flex gap-2">
+                                    <div class="form-group col-sm-6">
+                                        <label class="mb-1" for="txtNombre">Nombre</label>
+                                        <input type="text" class="form-control form-control-sm" id="txtNombre"/>
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label class="mb-1" for="cboEstado">Estado</label>
+                                        <select class="form-control form-control-sm" id="cboEstado">
+                                            <option value="1">Activo</option>
+                                            <option value="0">No Activo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" type="button" id="btnGuardar">Guardar</button>
+                    <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="contenidoPrincipal">
+
+    </div>
+</section>
+
+@section Scripts{
+    <script src="~/js/vistas/seccionCategoria.js"></script>
+}

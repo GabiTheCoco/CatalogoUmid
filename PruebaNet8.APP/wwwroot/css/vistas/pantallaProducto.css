@@ -1,0 +1,258 @@
+:root {
+    --color-fondo: #f1f1f2;
+    --color-botones: #1995AD;
+    --color-gris: #BCBABE;
+    --color-azulcito: #A1D6E2;
+    --color-botones-hover: #157083;
+    --color-header:rgb(199, 199, 202)2;
+    --color-wsp: #25D366;
+}
+
+
+.pantallaProducto{
+    width: 100%;
+    height: 79vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5em;
+}
+
+.bloqueIzquierda{
+    width: 10%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 1.5em;
+}
+
+.btnVolver{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 5em;
+    font-size: .9em;
+    color: var(--color-botones);
+    background-color: var(--color-fondo);
+    cursor: pointer;
+}
+
+.iconoFlecha{
+    height: 100%;
+}
+
+.bloqueImagenes{
+    height:  90%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1em;
+    box-sizing: border-box;
+}
+
+.agregarImagen{
+    width: 80%;
+    height: 20%;
+    border-radius: .5em;
+    font-size: 1.5em;
+    outline: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    cursor: pointer;
+    order: 2;
+}
+
+.contentImg {
+    width: 100%;
+    height: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.opciones {
+    width: 10%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.editarImagen, .eliminarImagen {
+    font-size: .9em;
+}
+
+.divImg {
+    width: auto;
+    height: 100%;
+}
+
+.imgRelacionadas, .imgGrande, .editarImagen, .eliminarImagen{
+    cursor: pointer;
+}
+
+.imgRelacionadas {
+    width: auto;
+    height: 100%;
+    object-fit: contain;
+    aspect-ratio: 1 / 1;
+    border-radius: .5em;
+}
+
+.editarImagen, .btnEditar {
+    color: var(--color-botones);
+}
+
+.eliminarImagen, .btnEliminar {
+    color: orangered;
+}
+
+.img-active{
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+}
+
+.divImgGrande{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.divImgGrande img{
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    aspect-ratio: 1 / 1;
+    box-sizing: border-box;
+}
+
+.divOpciones {
+    height: 20%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.detallesProducto{
+    width: 30%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+    padding: 1em;
+    background-color: white;
+    border-radius: .5em;
+}
+
+.nombreProducto, .descripcionProducto{
+    font-size: 1em;
+}
+
+.nombreProducto{
+    justify-self: baseline;
+    font-weight: bold;
+}
+
+.descripcionProducto{
+    display: flex;
+    width: 100%;
+    height: 50%;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.infoProducto{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 30%;
+}
+
+.divStockCantidad{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 40%;
+}
+
+
+.stockProducto{
+    font-size: 1em;
+    width: 20%;
+    height: auto;
+    text-align: center;
+}
+
+.iconoMenos,.txtCantidadProducto, .iconoMas{
+    height: 100%;
+}
+
+.iconoMenos, .iconoMas{
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+.btnEditar, .btnEliminar {
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.divPrecioCarrito{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 40%;
+    width: 100%;
+}
+
+.precioProducto{
+    font-size: 2em;
+    width: auto;
+}
+
+.cantidadProducto {
+    /* border: 1px solid rgba(0,0,0,.1); */
+    padding: .5em;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 35%;
+    height: auto;
+    box-sizing: border-box;
+}
+
+
+.btnCarrito{
+    width: 55%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 1.2em;
+    color: white;
+    background-color: var(--color-botones);
+    border-radius: .3em;
+    cursor: pointer;
+}
+
+.btnCarrito .iconoCarrito{
+    font-size: 1em;
+    color: white;
+}

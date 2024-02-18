@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Estilos{
+    <link rel="stylesheet" href="~/css/vistas/pantallaUsuario.css" />
+    <link rel="stylesheet" href="~/vendor/bootstrap/css/bootstrap.min.css" />
+}
+
+<section class="seccionLogin">
+
+    <div class="contenedor">
+        <button type="button" class="btnVolver">
+            <i class="fa-solid fa-arrow-right fa-rotate-180 iconoFlecha"></i>
+            <span class="textoBtnVolver">Volver</span>
+        </button>
+    </div>
+
+    <div class="contenidoPrincipal">
+        <form class="formIngreso">
+            <h2 class="tituloForm align-self-center">Ingreso de usuarios</h2>
+            <div class="form-group col-sm-8 gap-2 d-flex flex-column">
+                <label for="txtNombreUsuario" title="Debe tener al menos 1 letra mayúscula, 2 números y sin espacios ni caracteres especiales o símbolos">Nombre de usuario</label>
+                <input type="text" class="form-control form-control input-validar" id="txtNombreUsuario" name="Nombre" placeholder="UsuarioAleatorio1234">
+            </div>
+            <div class="form-group col-sm-8 gap-2 d-flex flex-column">
+                <label for="txtPassword" title="Debe tener al menos 1 letra mayúscula, 2 números y un símbolo permitido (#; *;_; -; !)">Contraseña</label>
+                <div class="passwDiv d-flex align-items-center position-relative">
+                    <input type="password" class="form-control form-control input-validar" id="txtPassword" name="Contraseña" minlength="8" maxlength="16" placeholder="ContraseñaLoca123">
+                    <span toggle="#txtPassword" class="toggle-password">
+                        <i class="fa-solid fa-eye"></i>
+                    </span>
+                </div>
+            </div>
+            <span id="mensajeAuth"></span>
+
+            <button class="btn btn-primary btn-lg" type="button" id="btnEnviarDatos">Ingresar</button>
+            <p class="crearAdmin">Crear nuevo Usuario</p>
+        </form>
+    </div>
+
+
+</section>
+
+@section Scripts{
+    <script src="~/js/vistas/pantallaUsuarios.js"></script>
+}

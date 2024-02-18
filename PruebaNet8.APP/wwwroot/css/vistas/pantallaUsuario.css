@@ -1,0 +1,64 @@
+﻿.seccionLogin{
+    width: 100%;
+    height: 79vh !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 1.5em;
+}
+
+.contenedor{
+    width: 100%;
+    height: 10%;
+}
+
+.contenidoPrincipal {
+    display: flex;
+    justify-content: space-evenly;
+    width: 40%;
+    height: 90%;
+    box-sizing: border-box;
+}
+
+.formIngreso {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 80%;
+    height: 90%;
+    box-sizing: border-box;
+    background-color: white;
+    border: 2px solid rgba(0,0,0,.1);
+    border-radius: .5em;
+}
+
+.toggle-password {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+}
+
+.tituloForm {
+    font-size: 2em;
+    font-weight: 100;
+}
+
+.btnVolver {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 5em;
+    font-size: .9em;
+    color: var(--color-botones);
+    background-color: var(--color-fondo);
+    cursor: pointer;
+}
+
+.crearAdmin {
+    font-size: .9em;
+    color: var(--color-botones);
+    cursor: pointer;
+}

@@ -1,0 +1,214 @@
+﻿:root {
+    --color-fondo: #f1f1f2;
+    --color-botones: #1995AD;
+    --color-gris: #BCBABE;
+    --color-azulcito: #A1D6E2;
+    --color-botones-hover: #157083;
+    --color-header: rgb(199, 199, 202)2;
+    --color-wsp: #25D366;
+}
+
+.pantallaCarrito {
+    height: auto;
+    width: 100%;
+    min-height: 79vh;
+    padding: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.bloquePrincipal{
+    height: auto;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    align-self: flex-start;
+    gap: 1.5em;
+}
+
+.btnVolver {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 5em;
+    font-size: .9em;
+    color: var(--color-botones);
+    background-color: var(--color-fondo);
+    cursor: pointer;
+    height: auto;
+}
+
+.seccionProductos {
+    height: 100%;
+    width: 100%;
+    padding: 1em;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    gap: 1.5em;
+}
+
+.tarjetaProducto {
+    width: 100%;
+    height: 15vh;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+    padding: 1em;
+    background-color: white;
+    border-radius: .5em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.divImagen{
+    width: auto;
+    height: 100%;
+}
+
+.tarjetaProducto .divImagen img {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1; 
+    object-fit: contain;
+}
+
+.infoProducto{
+    width: 70%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/*.divArriba, .divAbajo{
+    height: 40%;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}*/
+
+.divOpciones{
+    width: 10%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.iconoMenos, .iconoMas{
+    cursor: pointer;
+}
+
+.divCantidad{
+    display: flex;
+    width: 80%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btnEliminar{
+    color: orangered;
+    cursor: pointer;
+}
+
+.seccionPedido {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    min-height: 70vh;
+    width: 40%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+    padding: 1.5em;
+    background-color: white;
+    border-radius: .5em;
+    align-self: flex-start;
+}
+
+.tituloPedido {
+    font-size: 1.5em;
+    font-weight: 100;
+}
+
+.infoPedido{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 50vh;
+    width: 100%;
+}
+
+.divCampos{
+    width:100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 1.5em 0;
+    gap: 1.5em
+}
+
+.resumenProducto{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.divTexto{
+    display: flex;
+    justify-content: center;
+    gap: .5em;
+}
+
+.divTotales{
+    width: 100%;
+    height: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1em;
+    font-size: 1.2em;
+}
+
+.divBotones {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.btnPedido, .btnLimpiar {
+    height: 2em;
+    width: 10em;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    font-size: 1.1em;
+    border-radius: 1em;
+    text-decoration: none;
+    cursor: pointer;
+    color: white;
+}
+
+.btnPedido {
+    background-color: var(--color-wsp);
+}
+
+.btnLimpiar{
+    background-color: orangered;
+}
+.iconoWsp {
+    color: white;
+    font-size: 1.2em;
+}

@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="viewport" content="height=device-height, initial-scale=1.0">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
+        <title>Umid - @ViewData["Title"]</title>
+
+        <link rel="shortcut icon" href="#">
+        <link rel="stylesheet" href="~/css/styles.css"/>
+        <link rel="stylesheet" href="~/css/nav.css"/>
+        <link rel="stylesheet" href="~/css/footer.css">
+
+
+        <link href="~/vendor/toastr/toastr.min.css" rel="stylesheet">
+        <link href="~/vendor/sweetalert/sweetalert.css" rel="stylesheet">
+        <link rel="stylesheet" href="~/vendor/bootstrap/css/bootstrap.min.css" />
+        @* <link rel="stylesheet" href="~/css/fontAwesome.css" /> *@
+
+        @await RenderSectionAsync("Estilos", required: false)
+    </head>
+    <body>
+        <header>
+            <nav class="navBar"> 
+                <a class="btnHome" href="@Url.Action("Productos", "Home")">
+                    <img src="~/assets/img/logoSinFondoRecortada.png" class="logoMarca" alt="El logo de la marca Ümid"/>
+                </a>
+                <div class="busquedaContainer">
+                    <input type="text" class="busquedaInput" placeholder="¿Que desea buscar?">
+                    <i class="fa-solid fa-magnifying-glass iconoLupa"></i>
+                </div>
+
+                <a class="buttonUsers" href="@Url.Action("Index", "User")">
+                    <i class="fa-solid fa-user iconoUsuario"></i>
+                </a>
+
+                <a class="buttonCarrito" href="@Url.Action("Index", "Carrito")">
+                    <i class="fa-solid fa-cart-shopping iconoCarrito"></i>
+                </a>
+            </nav>
+        </header>
+
+        <main role="main">
+            @RenderBody()
+        </main>
+
+        <footer class="piePagina">
+            <div class="redes">
+                <i class="fa-brands fa-instagram iconoInstagram"></i>
+                <i class="fa-solid fa-envelope iconoEmail"></i>
+                <i class="fa-brands fa-tiktok iconoTiktok"></i>
+            </div>
+            <span class="creditos">Desarrollado por Gabriel Abalde</span>
+            <button type="button" class="btnConsultas">
+                <i class="fa-brands fa-whatsapp iconoWsp"></i>
+                Consultas
+            </button>
+        </footer>
+
+    <!-- Bootstrap core JavaScript-->
+        <script src="~/vendor/jquery/jquery.min.js"></script>
+        <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        @* <script src="~/vendor/jquery/jquery.js"></script> *@
+        <script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
+        <script src="~/vendor/toastr/toastr.min.js"></script>
+        <script src="~/vendor/sweetalert/sweetalert.js"></script>
+        <script src="~/vendor/loadingoverlay/loadingoverlay.min.js"></script>
+        <script src="~/js/script.js"></script>
+
+        @await RenderSectionAsync("Scripts", required: false)
+    </body>
+</html>

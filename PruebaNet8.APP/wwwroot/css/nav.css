@@ -1,0 +1,71 @@
+/*:root {
+    --color-fondo: #f1f1f2;
+    --color-botones: #1995AD;
+    --color-gris: #BCBABE;
+    --color-azulcito: #A1D6E2;
+    --color-botones-hover: #157083;
+    --color-header: rgb(199, 199, 202)2;
+}
+*/
+
+.navBar{
+    display: flex;
+    align-items: center;
+    justify-content:space-around;
+    height: 100%;
+    padding: .5em 0;
+}
+
+.navBar .btnHome{
+    display: inline-block;
+    height: 100%;
+    width: auto;
+}
+
+.btnHome .logoMarca{
+    width: 60px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.busquedaContainer{
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 .5em;
+    width: 80%;
+    height: 65%;
+    border-radius: 1em;
+}
+
+.busquedaInput{
+    outline: none;
+    height: 100%;
+    width: 90%;
+    font-size: .9em;
+}
+
+.iconoLupa{
+    height: 50%;
+    cursor: pointer;
+}
+
+
+.iconoCarrito, .iconoUsuario{
+    font-size: 1.7em;
+    color: var(--color-botones);
+    cursor: pointer;
+}
+
+/*.iconoCarrito:hover{
+    cursor: pointer;
+    scale: 1.1;
+    transition: .3s ease-in;
+    color: var(--color-botones-hover)
+}
+
+.iconoCarrito:not(:hover){
+    transition: .3s ease-out;
+}*/
