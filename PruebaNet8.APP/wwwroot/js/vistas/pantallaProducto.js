@@ -2,7 +2,7 @@
     idProducto: 0,
     nombre: "",
     marca: "",
-    descripcion: "",
+    descripcion: '',
     idCategoria: 0,
     stock: "",
     precio: "",
@@ -23,8 +23,8 @@ const MODELO_CARRITO = {
 
 $(document).ready(function () {
     $("#modalData").modal("hide");
-    const PRODUCTOS_CARRITO = JSON.parse(localStorage.getItem("productosCarrito")) || [];
 
+    const PRODUCTOS_CARRITO = JSON.parse(localStorage.getItem("productosCarrito")) || "";
 
     if (PRODUCTOS_CARRITO.length > 0) {
         $(".iconoCarrito").removeClass("fa-solid fa-cart-shopping");
@@ -34,21 +34,34 @@ $(document).ready(function () {
     const idProducto = sessionStorage.getItem("idProducto");
     actualizarProducto(idProducto);
     actualizarListaCategorias();
+
+    const Token = sessionStorage.getItem("Token") || null;
+
+
+    if (Token != null) {
+        $(".divOpciones").removeClass("oculto");
+    }
+
 })
 
 function mostrarModal(modelo = MODELO_BASE) {
     $("#txtId").val(modelo.idProducto);
     $("#txtNombre").val(modelo.nombre);
     $("#txtMarca").val(modelo.marca);
-    $("#txtDescripcion").val(modelo.descripcion);
+    $('#txtDescripcion').val(modelo.descripcion);
     $("#cboCategoria").val(modelo.idCategoria == 0 ? $("#cboCategoria option:first").val() : modelo.idCategoria);
     $("#txtStock").val(modelo.stock);
     $("#txtPrecio").val(modelo.precio);
     $("#cboEstado").val(parseInt(modelo.esActivo));
 
-    console.log(modelo);
+    const Token = sessionStorage.getItem("Token") || null;
 
-    $("#modalData").modal("show");
+    if (Token != null) {
+        $("#modalData").modal("show");
+    }
+    else {
+        toastr.warning("No se tiene autorización para llevar a cabo esta acción, inicie sesión por favor");
+    }
 }
 
 function actualizarProducto(id) {
@@ -58,7 +71,6 @@ function actualizarProducto(id) {
         dataType: 'JSON',
         success: function (datos) {
             $(".bloqueImagenes").empty();
-            $(".bloqueImagenes").append($("<p>").text("+").addClass("agregarImagen"))
             agregarInfo(datos.data);
             cambiarImgGrande();
         },
@@ -76,8 +88,8 @@ function actualizarListaCategorias() {
         })
 
         .then(responseJson => {
-            if (responseJson.data.length > 0) {
-                responseJson.data.forEach((item) => {
+            if (responseJson.length > 0) {
+                responseJson.forEach((item) => {
                     $("#cboCategoria").append($("<option>").val(item.id).text(item.nombreCategoria))
                 })
             }
@@ -111,6 +123,7 @@ function agregarInfo(producto) {
     $(".imgGrande").attr("src", producto.imagenesRelacionadas[0].url);
 
     let cont = 1;
+    $(".bloqueImagenes").append($("<p>").text("+").addClass("agregarImagen oculto"))
 
     producto.imagenesRelacionadas.forEach((imagen) => {
         const contentImg = $("<contentImg>").addClass("contentImg");
@@ -118,15 +131,23 @@ function agregarInfo(producto) {
         const divImg = $(".divImg")
         const itemImg = $("<img>").attr("src", imagen.url).addClass("imgRelacionadas").attr("data-idimagen", imagen.idImagen);
 
-        const opciones = $("<div>").addClass("opciones");
-        const editarImagen = $("<i>").addClass("editarImagen fas fa-pencil-alt");
-        const eliminarImagen = $("<i>").addClass("eliminarImagen fas fa-trash-alt");
 
-        opciones.append(editarImagen, eliminarImagen);
+        const Token = sessionStorage.getItem("Token") || null;
 
-        divImg.append(itemImg)
+        divImg.append(itemImg);
 
-        contentImg.append(itemImg, opciones);
+        if (Token != null) {
+            const opciones = $("<div>").addClass("opcionesImg");
+            const editarImagen = $("<i>").addClass("editarImagen fas fa-pencil-alt");
+            const eliminarImagen = $("<i>").addClass("eliminarImagen fas fa-trash-alt");
+
+            opciones.append(editarImagen, eliminarImagen);
+
+            contentImg.append(itemImg, opciones);
+            $(".agregarImagen").removeClass("oculto");
+        } else {
+            contentImg.append(itemImg);
+        }
 
         if (cont == 4)
             $(".agregarImagen").remove();
@@ -173,86 +194,146 @@ $(".pantallaProducto").on("click", ".editarImagen", function () {
     const idProducto = sessionStorage.getItem("idProducto");
     const idImagen = $(this).closest(".contentImg").find(".imgRelacionadas").data("idimagen");
 
+    const Token = sessionStorage.getItem("Token") || null;
 
-    
+    if (Token != null) {
+        $("#txtId").val(idImagen);
+        $("#txtImagen").val("");
+        $("#modalImg").modal("show");
+    } else {
+        toastr.warning("No se tiene autorización para llevar a cabo esta acción, inicie sesión por favor");
+    }
 })
 
 $(".pantallaProducto").on("click", ".eliminarImagen", function () {
     const idProducto = sessionStorage.getItem("idProducto");
     const id = parseInt($(this).closest(".contentImg").find(".imgRelacionadas").data("idimagen"));
 
-    swal({
-        title: "¿Está seguro?",
-        text: `¿Eliminar la imagen seleccionada?`,
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonClass: "btn-danger",
-        confirmButtonText: "Si, Eliminar",
-        cancelButtonText: "No, cancelar",
-        closeOnConfirm: false,
-        closeOnCancel: true
-    },
+    const Token = sessionStorage.getItem("Token") || null;
 
-        function (respuesta) {
+    if (Token != null) {
 
-            if (respuesta) {
-                $(".showSweetAlert").LoadingOverlay("show");
+        const headers = new Headers();
 
-                fetch(`/EliminarImagen/${id}`, {
-                    method: "DELETE"
-                })
-                    .then(response => {
-                        $(".showSweetAlert").LoadingOverlay("hide");
-                        return response.ok ? response.json() : Promise.reject(response);
+        headers.append("Authorization", Token);
+
+        swal({
+            title: "¿Está seguro?",
+            text: `¿Eliminar la imagen seleccionada?`,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Si, Eliminar",
+            cancelButtonText: "No, cancelar",
+            closeOnConfirm: false,
+            closeOnCancel: true
+        },
+
+            function (respuesta) {
+
+                if (respuesta) {
+                    $(".showSweetAlert").LoadingOverlay("show");
+
+                    fetch(`/EliminarImagen/${id}`, {
+                        method: "DELETE",
+                        headers: headers
                     })
-                    .then(responseJSON => {
-                        if (responseJSON.estado) {
-                            swal("!Imagen eliminada con exito!", responseJSON.mensaje, "success");
-                            actualizarProducto(idProducto);
-                        } else {
-                            swal("Lo sentimos", responseJSON.mensaje, "error")
-                        }
-                    })
-            }
+                        .then(response => {
+                            $(".showSweetAlert").LoadingOverlay("hide");
+                            return response.ok ? response.json() : Promise.reject(response);
+                        })
+                        .then(responseJSON => {
+                            if (responseJSON.estado) {
+                                swal("!Imagen eliminada con exito!", responseJSON.mensaje, "success");
+                                actualizarProducto(idProducto);
+                            } else {
+                                swal("Lo sentimos", responseJSON.mensaje, "error")
+                            }
+                        })
+                }
 
-        });
+            });
+    }
+    else {
+        toastr.warning("No se tiene autorización para llevar a cabo esta acción, inicie sesión por favor");
+    }
+
+    
 })
 
 $(".pantallaProducto").on("click", ".agregarImagen", function () {
-    $("#modalImg").modal("show");
+    const Token = sessionStorage.getItem("Token") || null;
+
+    if (Token != null) {
+        $("#txtId").val(0);
+        $("#modalImg").modal("show");
+    }
+    else {
+        toastr.warning("No se tiene autorización para llevar a cabo esta acción, inicie sesión por favor");
+    }
 })
 
 $("#btnEditarImg").click(function () {
     const id = sessionStorage.getItem("idProducto");
 
     const inputFoto = $("#txtImagen")[0];
+    const idImagen = $("#txtId").val();
 
     if (inputFoto.files.length != 0) {
         const formData = new FormData;
 
         formData.append("foto", inputFoto.files[0]);
 
+        const Token = sessionStorage.getItem("Token") || null;
+
+        const headers = new Headers();
+
+        headers.append("Authorization", Token);
+
         $("#modalImg").find("div.modal-content").LoadingOverlay("show");
 
-        fetch(`/AgregarImagen/${id}`, {
-            method: "POST",
-            body: formData
-        })
-            .then(response => {
-                $("#modalImg").find("div.modal-content").LoadingOverlay("hide");
-                return response.ok ? response.json() : Promise.reject(response);
+        if (idImagen == 0) {
+            fetch(`/AgregarImagen/${id}`, {
+                method: "POST",
+                headers: headers,
+                body: formData
             })
-            .then(responseJSON => {
-                if (responseJSON.estado) {
-                    swal("Imagen agregada con exito", responseJSON.mensaje, "success");
-                    $("#modalImg").modal("hide");
-                    actualizarProducto(id);
-                } else {
-                    swal("Lo sentimos", responseJSON.mensaje, "error");
-                }
+                .then(response => {
+                    $("#modalImg").find("div.modal-content").LoadingOverlay("hide");
+                    return response.ok ? response.json() : Promise.reject(response);
+                })
+                .then(responseJSON => {
+                    if (responseJSON.estado) {
+                        swal("Imagen agregada con exito", responseJSON.mensaje, "success");
+                        $("#modalImg").modal("hide");
+                        actualizarProducto(id);
+                    } else {
+                        swal("Lo sentimos", responseJSON.mensaje, "error");
+                    }
+                })
+        } else {
+
+            fetch(`/EditarImagen/${idImagen}`, {
+                method: "PUT",
+                headers: headers,
+                body: formData
             })
+                .then(response => {
+                    $("#modalImg").find("div.modal-content").LoadingOverlay("hide");
+                    return response.ok ? response.json() : Promise.reject(response);
+                })
+                .then(responseJSON => {
+                    if (responseJSON.estado) {
+                        swal("Imagen editada con exito", responseJSON.mensaje, "success");
+                        $("#modalImg").modal("hide");
+                        actualizarProducto(id);
+                    } else {
+                        swal("Lo sentimos", responseJSON.mensaje, "error");
+                    }
+                })
+        }
     } else {
-        alert("seleccionar una foto, por favor");
+        toastr.warning("", "Seleccione una foto, por favor")
     }
 
     
@@ -271,14 +352,11 @@ $(".pantallaProducto").on("click", ".btnEditar", function (datos = MODELO_BASE) 
     datos.precio = parseInt($(".precioProducto").text().replace("$ ", ""));
     datos.esActivo = $(".nombreProducto").attr("data-estado");
 
-    console.log("nombre valor es activo: " + $(".nombreProducto").data("estado"));
-    console.log("btn editar es activo: " + datos.esActivo);
-
     mostrarModal(datos);
 })
 
 $("#btnGuardar").click(function () {
-    const inputs = $(".input-validar").serializeArray();
+    const inputs = $('.input-validar').serializeArray();
     const inputs_nulos = inputs.filter((item) => item.value.trim() === "" || item.value === null);
 
     if (inputs_nulos.length > 0) {
@@ -289,7 +367,7 @@ $("#btnGuardar").click(function () {
         return;
     }
 
-    const regexDefault = /^(?=.*[a-z])[A-Za-z0-9\d\s]{2,}$/;
+    const regexDefault = /^(?=.*[a-z])[A-Za-zzáéíóúñÑ0-9\d\s]{2,}$/;
     const regexDesc = /^[A-Za-záéíóúñÑ\d\s.,!€?'~*+&-_·":@|{}´$#$%()=¿]+$/;
     const regexNums = /^(?=.*\d)\d+$/;
 
@@ -298,22 +376,35 @@ $("#btnGuardar").click(function () {
     modelo["idProducto"] = $("#txtId").val();
     modelo["nombre"] = $("#txtNombre").val();
     modelo["marca"] = $("#txtMarca").val();
-    modelo["descripcion"] = $("#txtDescripcion").val();
+    modelo['descripcion'] = $('#txtDescripcion').val();
     modelo["idCategoria"] = $("#cboCategoria").val();
     modelo["stock"] = $("#txtStock").val();
     modelo["precio"] = $("#txtPrecio").val();
     modelo["esActivo"] = $("#cboEstado").val();
+
+    console.log(regexDefault.test(modelo.nombre));
+    console.log(regexDefault.test(modelo.marca))
+    console.log(regexDesc.test(modelo.descripcion))
+    console.log(regexNums.test(modelo.stock))
+    console.log(regexNums.test(modelo.precio))
 
     if (regexDefault.test(modelo.nombre) && regexDefault.test(modelo.marca) && regexDesc.test(modelo.descripcion) && regexNums.test(modelo.stock) && regexNums.test(modelo.precio)) {
         const formData = new FormData;
 
         formData.append("modelo", JSON.stringify(modelo));
 
+        const Token = sessionStorage.getItem("Token") || null;
+
+        const headers = new Headers();
+
+        headers.append("Authorization", Token);
+
         $("#modalData").find("div .modal-content").LoadingOverlay("show");
 
 
         fetch("/Producto/Editar", {
             method: "PUT",
+            headers: headers,
             body: formData
         })
             .then(response => {
@@ -348,102 +439,110 @@ $(".pantallaProducto").on("click", ".btnEliminar", function (datos = MODELO_BASE
     datos.esActivo = parseInt($(".nombreProducto").data("esactivo"));
 
 
-    swal({
-        title: "¿Está seguro?",
-        text: `¿Desea realizar un borrado lógico del producto "${datos.nombre}"?`,
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonClass: "btn-danger",
-        cancelButtonClass: "btn btn-primary",
-        confirmButtonText: "Borrado físico",
-        cancelButtonText: "Borrado lógico",
-        closeOnConfirm: false,
-        closeOnCancel: true
-    },
+    const Token = sessionStorage.getItem("Token") || null;
 
-        function (borradoFisico) {
+    const headers = new Headers();
 
-            if (borradoFisico) {
+    headers.append("Authorization", Token);
 
-                swal({
-                    title: "¿Está seguro?",
-                    text: `Eliminar el Producto "${datos.nombre}"`,
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonClass: "btn-danger",
-                    cancelButtonClass: "btn btn-primary",
-                    confirmButtonText: "Si, Eliminar",
-                    cancelButtonText: "No, cancelar",
-                    closeOnConfirm: false,
-                    closeOnCancel: true
-                },
+    if (Token != null) {
+        swal({
+            title: "¿Está seguro?",
+            text: `¿Desea realizar un borrado lógico del producto "${datos.nombre}"?`,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            cancelButtonClass: "btn btn-primary",
+            confirmButtonText: "Borrado físico",
+            cancelButtonText: "Borrado lógico",
+            closeOnConfirm: false,
+            closeOnCancel: true
+        },
 
-                    function (respuesta) {
+            function (borradoFisico) {
 
-                        if (respuesta) {
-                            $(".showSweetAlert").LoadingOverlay("show");
+                if (borradoFisico) {
 
-                            fetch(`/Eliminar/${datos.idProducto}`, {
-                                method: "DELETE"
-                            })
-                                .then(response => {
-                                    $(".showSweetAlert").LoadingOverlay("hide");
-                                    return response.ok ? response.json() : Promise.reject(response);
+                    swal({
+                        title: "¿Está seguro?",
+                        text: `Eliminar el Producto "${datos.nombre}"`,
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        cancelButtonClass: "btn btn-primary",
+                        confirmButtonText: "Si, Eliminar",
+                        cancelButtonText: "No, cancelar",
+                        closeOnConfirm: false,
+                        closeOnCancel: true
+                    },
+
+                        function (respuesta) {
+
+                            if (respuesta) {
+                                $(".showSweetAlert").LoadingOverlay("show");
+
+                                fetch(`/Eliminar/${datos.idProducto}`, {
+                                    method: "DELETE",
+                                    headers: headers
                                 })
-                                .then(responseJSON => {
-                                    if (responseJSON.estado) {
-                                        $("#modalData").modal("hide");
-                                        window.location.href = "/Home/Productos";
-                                        toastr.success("", "El producto fue eliminado correctamente!")
-                                    } else {
-                                        swal("Lo sentimos", responseJSON.mensaje, "error")
-                                    }
-                                })
-                        }
+                                    .then(response => {
+                                        $(".showSweetAlert").LoadingOverlay("hide");
+                                        return response.ok ? response.json() : Promise.reject(response);
+                                    })
+                                    .then(responseJSON => {
+                                        if (responseJSON.estado) {
+                                            $("#modalData").modal("hide");
+                                            window.location.href = "/Home/Productos";
+                                            toastr.success("", "El producto fue eliminado correctamente!")
+                                        } else {
+                                            swal("Lo sentimos", responseJSON.mensaje, "error")
+                                        }
+                                    })
+                            }
 
-                    });
-                
-            } else {
+                        });
 
-                if (datos.esActivo == 0) {
-                    toastr.info("", "El Producto seleccionado está oculto actualmente");
                 } else {
 
-                    datos.esActivo = 0;
+                    if (datos.esActivo == 0) {
+                        toastr.info("", "El Producto seleccionado está oculto actualmente");
+                    } else {
 
-                    formData = new FormData();
+                        datos.esActivo = 0;
 
-                    formData.append("modelo", datos);
+                        formData = new FormData();
 
-                    fetch("/Producto/Editar", {
-                        method: "PUT",
-                        body: formData
-                    })
-                        .then(response => {
-                            $("#modalData").find("div .modal-content").LoadingOverlay("hide");
+                        formData.append("modelo", datos);
 
-                            return response.ok ? response.json() : Promise.reject(response);
+                        fetch("/Producto/Editar", {
+                            method: "PUT",
+                            headers: headers,
+                            body: formData
                         })
-                        .then(responseJSON => {
-                            if (responseJSON.estado) {
-                                $("#modalData").modal("hide");
-                                toastr.info("", "El Producto se ocultó al usuario correctamente!");
-                                actualizarProducto($("#txtId").val());
-                            } else {
-                                toastr.error("", "El Producto no se pudo ocultar correctamente");
-                                console.log("Lo sentimos", responseJSON.mensaje);
-                            }
-                        })
+                            .then(response => {
+                                $("#modalData").find("div .modal-content").LoadingOverlay("hide");
+
+                                return response.ok ? response.json() : Promise.reject(response);
+                            })
+                            .then(responseJSON => {
+                                if (responseJSON.estado) {
+                                    $("#modalData").modal("hide");
+                                    toastr.info("", "El Producto se ocultó al usuario correctamente!");
+                                    actualizarProducto($("#txtId").val());
+                                } else {
+                                    toastr.error("", "El Producto no se pudo ocultar correctamente");
+                                    console.log("Lo sentimos", responseJSON.mensaje);
+                                }
+                            })
+                    }
+
                 }
 
-                
-            }
-
-
-
-        });
-
-    
+            });
+    }
+    else {
+        toastr.warning("No se tiene autorización para llevar a cabo esta acción, inicie sesión por favor");
+    }
 
 })
 

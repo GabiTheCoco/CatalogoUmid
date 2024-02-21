@@ -6,6 +6,7 @@
 @section Estilos {
     <link rel="stylesheet" href="~/css/vistas/pantallaProducto.css" />
     <link rel="stylesheet" href="~/vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/styles.css" />
 }
 
 <section class="pantallaProducto">
@@ -85,7 +86,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content bg-white">
                 <div class="modal-header bg-dark">
-                    <h6 class="m-0 font-weight-bold text-white">Editar Imagen</h6>
+                    <h6 class="m-0 font-weight-bold text-white">Imagen</h6>
                     <button class="close bg-dark" type="button" data-dismiss="modal" aria-label="Close">
                         <span class="text-white" aria-hidden="true">X</span>
                     </button>
@@ -117,13 +118,7 @@
         </button>
 
         <div class="bloqueImagenes">   
-            @* <p class="agregarImagen">+</p> *@
         </div>
-        @* <div class="divOpciones">
-            <i class="editarImagen fas fa-pencil-alt" title="Editar Imagen"></i>
-            <i class="eliminarImagen fas fa-trash-alt" title="Editar Imagen"></i>
-        </div> *@
-        
     </div>
     <div class="divImgGrande">
 
@@ -132,14 +127,14 @@
     <div class="detallesProducto">
 
         <p class="nombreProducto"></p>
-        <p class="descripcionProducto"></p>
+        <div class="descripcionProducto"></div>
 
         <div class="infoProducto">
 
             <div class="divStockCantidad">
                 <p class="precioProducto"></p>
                 <p class="stockProducto"></p>
-                <div class="opciones">
+                <div class="divOpciones oculto">
                     <i class="btnEditar fas fa-pencil-alt" title="Editar Producto"></i>
                     <i class="btnEliminar fas fa-trash-alt" title="Eliminar Producto"></i>
                 </div>

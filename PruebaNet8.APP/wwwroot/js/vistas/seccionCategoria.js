@@ -8,6 +8,7 @@ let idCategoriaSeleccionada;
 
 $(document).ready(function () {
     $("#modalData").modal("hide");
+
     const PRODUCTOS_CARRITO = JSON.parse(localStorage.getItem("productosCarrito")) || [];
 
 
@@ -19,19 +20,28 @@ $(document).ready(function () {
     sessionStorage.setItem("ultimaPantalla", "Home/Categorias");
 
     actualizarCategorias();
+
+    const Token = sessionStorage.getItem("Token") || null;
+
+    if (Token != null) {
+        $(".opcionCrear").removeClass("oculto");
+        $(".filtroEstado").removeClass("oculto");
+    }
 })
 
 function actualizarCategorias() {
     const orden = $(".filtroOrden").val();
+    const estado = $(".filtroEstado").val();
 
     $.ajax({
-        url: `/Home/MostrarCategoriasyProductos/${orden}`, 
+        url: `/Home/MostrarCategoriasyProductos/${orden}/${estado}`, 
         method: 'GET',
         dataType: 'JSON',
         success: function (datos) {
             $(".contenidoPrincipal").empty();
-
-            if (datos != null) {
+            console.log(datos);
+            if (datos != null && datos.length > 0) {
+                $(".labelError").remove();
                 mostrarCategorias(datos);
             } else {
                 $(".seccionCategorias").append($("<p>").text("No existen productos con los filtros aplicados").addClass("align-self-center d-flex align-items-center justify-content-center labelError"));
@@ -50,7 +60,15 @@ function mostrarModal(modelo = MODELO_BASE) {
     $("#txtNombre").val(modelo.nombreCategoria);
     $("#cboEstado").val(modelo.esActivo);
 
-    $("#modalData").modal("show");
+    const Token = sessionStorage.getItem("Token") || null;
+
+    if (Token != null) {
+        $("#modalData").modal("show");
+    }
+    else {
+        toastr.warning("No se tiene autorización para llevar a cabo esta acción, inicie sesión por favor");
+    }
+
 }
 
 function mostrarCategorias(categorias) {
@@ -66,12 +84,25 @@ function mostrarCategorias(categorias) {
         // crear el contenedor de opciones para el titulo y las opciones crud para esa categoria en especifico
         const divOpciones = $("<div>").addClass("divOpciones");
 
+
         // crear el título para la categoría
         const nombreCategoria = $("<h2>").addClass("tituloCategoria").text(item.nombreCategoria).attr("data-estadocategoria", item.esActivo);
 
-        const opcionEditar = $("<i>").addClass("fas fa-pencil-alt opcionEditar").attr("data-nombrecategoria", `${item.nombreCategoria}`);
-        const opcionEliminar = $("<i>").addClass("fas fa-trash-alt opcionEliminar");
 
+        const Token = sessionStorage.getItem("Token") || null;
+
+        if (Token != null) {
+            const opcionesCrud = $("<div>").addClass("opcionesCrud");
+
+            const opcionEditar = $("<i>").addClass("fas fa-pencil-alt opcionEditar").attr("data-nombrecategoria", `${item.nombreCategoria}`);
+            const opcionEliminar = $("<i>").addClass("fas fa-trash-alt opcionEliminar");
+
+            opcionesCrud.append(opcionEditar, opcionEliminar);
+
+            divOpciones.append(nombreCategoria, opcionesCrud);
+        } else {
+            divOpciones.append(nombreCategoria);
+        }
 
         // crear el botón para ver todos los productos de la categoría específica
         const btnVerProductos = $("<button>")
@@ -79,7 +110,6 @@ function mostrarCategorias(categorias) {
             .addClass("btnVerProductos")
             .html("ver todo<i class='fa-solid fa-arrow-right iconoFlecha'></i>");
 
-        divOpciones.append(nombreCategoria, opcionEditar, opcionEliminar);
 
         categoriaProductosContainer.append(divOpciones, btnVerProductos);
 
@@ -140,7 +170,7 @@ $("#btnGuardar").click(function () {
         return;
     }
 
-    const regex = /^[a-zA-Z\s]+$/;
+    const regexDefault = /^(?=.*[a-z])[A-Za-záéíóúñÑ0\d\s]{2,}$/;
 
     const modelo = structuredClone(MODELO_BASE);
 
@@ -148,16 +178,23 @@ $("#btnGuardar").click(function () {
     modelo["nombreCategoria"] = $("#txtNombre").val();
     modelo["esActivo"] = $("#cboEstado").val();
 
-    if (regex.test(modelo.nombreCategoria)) {
+    if (regexDefault.test(modelo.nombreCategoria)) {
 
         $("#modalData").find("div.modal-content").LoadingOverlay("show");
+
+        const Token = sessionStorage.getItem("Token") || null;
+
+        const headers = new Headers();
+
+        headers.append("Authorization", Token);
+        headers.append("Content-type", "application/json; charset=utf-8");
 
         if (modelo.id == 0) {
             // entonces se crea una nueva categoria
 
             fetch("/Categoria/CrearCategoria", {
                 method: "POST",
-                headers: { "Content-Type": "application/json; charset=utf-8" },
+                headers: headers,
                 body: JSON.stringify(modelo)
             })
                 .then(response => {
@@ -181,7 +218,7 @@ $("#btnGuardar").click(function () {
 
             fetch("/Categoria/EditarCategoria", {
                 method: "PUT",
-                headers: { "Content-Type": "application/json; charset=utf-8" },
+                headers: headers,
                 body: JSON.stringify(modelo)
             })
                 .then(response => {
@@ -231,91 +268,104 @@ $(".seccionCategorias").on("click", ".opcionEliminar", function (datos = MODELO_
     datos.nombreCategoria = $(this).closest('.categoriaProductosContainer').find('.tituloCategoria').text();
     datos.esActivo = $(this).closest('.categoriaProductosContainer').find('.tituloCategoria').data("estadocategoria");
 
-    swal({
-        title: "¿Está seguro?",
-        text: `¿Desea realizar un borrado lógico de la Categoría "${datos.nombreCategoria}"?`,
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonClass: "btn-danger",
-        cancelButtonClass: "btn btn-primary",
-        confirmButtonText: "Borrado físico",
-        cancelButtonText: "Borrado lógico",
-        closeOnConfirm: false,
-        closeOnCancel: true
-    },
+    const Token = sessionStorage.getItem("Token") || null;
 
-        function (borradoFisico) {
+    if (Token != null) {
 
-            if (borradoFisico) {
+        const headers = new Headers();
 
-                swal({
-                    title: "¿Está seguro?",
-                    text: `¿Desea eliminar permanentemente la Categoría "${datos.nombreCategoria}" de la base de datos?`,
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonClass: "btn-danger",
-                    cancelButtonClass: "btn btn-primary",
-                    confirmButtonText: "Sí, Eliminar",
-                    cancelButtonText: "No, cancelar",
-                    closeOnConfirm: false,
-                    closeOnCancel: true
-                },
+        headers.append("Authorization", Token);
 
-                    function (respuesta) {
-                        if (respuesta) {
-                            $(".showSweetAlert").LoadingOverlay("show");
+        swal({
+            title: "¿Está seguro?",
+            text: `¿Desea realizar un borrado lógico de la Categoría "${datos.nombreCategoria}"?`,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            cancelButtonClass: "btn btn-primary",
+            confirmButtonText: "Borrado físico",
+            cancelButtonText: "Borrado lógico",
+            closeOnConfirm: false,
+            closeOnCancel: true
+        },
 
-                            fetch(`/Categoria/EliminarCategoria?Id=${datos.id}`, {
-                                method: "DELETE"
-                            })
-                                .then(response => {
-                                    $(".showSweetAlert").LoadingOverlay("hide");
-                                    categoriaContainer.remove();
-                                    return response.ok ? response.json() : Promise.reject(response);
+            function (borradoFisico) {
+
+                if (borradoFisico) {
+
+                    swal({
+                        title: "¿Está seguro?",
+                        text: `¿Desea eliminar permanentemente la Categoría "${datos.nombreCategoria}" de la base de datos?`,
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        cancelButtonClass: "btn btn-primary",
+                        confirmButtonText: "Sí, Eliminar",
+                        cancelButtonText: "No, cancelar",
+                        closeOnConfirm: false,
+                        closeOnCancel: true
+                    },
+
+                        function (respuesta) {
+                            if (respuesta) {
+                                $(".showSweetAlert").LoadingOverlay("show");
+
+                                fetch(`/Categoria/EliminarCategoria?Id=${datos.id}`, {
+                                    method: "DELETE",
+                                    headers: headers
                                 })
-                                .then(responseJSON => {
-                                    if (responseJSON.estado) {
-                                        $("#modalData").modal("hide");
+                                    .then(response => {
+                                        $(".showSweetAlert").LoadingOverlay("hide");
+                                        categoriaContainer.remove();
+                                        return response.ok ? response.json() : Promise.reject(response);
+                                    })
+                                    .then(responseJSON => {
+                                        if (responseJSON.estado) {
+                                            $("#modalData").modal("hide");
 
-                                        swal("Listo!", "La Categoría fue eliminada", "success");
-                                    } else {
-                                        swal("Lo sentimos", responseJSON.mensaje, "error");
-                                    }
-                                })
-                        }
-                    });
-            } else {
-
-                if (datos.esActivo == 0) {
-                    toastr.info("", "La Categoría seleccionada está oculta actualmente");
-                } else {
-                    datos.esActivo = 0;
-
-                    fetch("/Categoria/EditarCategoria", {
-                        method: "PUT",
-                        headers: { "Content-Type": "application/json; charset=utf-8" },
-                        body: JSON.stringify(datos)
-                    })
-                        .then(response => {
-                            $("#modalData").find("div.modal-content").LoadingOverlay("hide");
-                            return response.ok ? response.json() : Promise.reject(response);
-                        })
-                        .then(responseJSON => {
-                            if (responseJSON.estado) {
-                                $("#modalData").modal("hide");
-                                toastr.info("", "La categoría se ocultò al usuario correctamente!");
-                                actualizarCategorias();
-                            } else {
-                                toastr.error("Lo sentimos", responseJson.mensaje);
+                                            swal("Listo!", "La Categoría fue eliminada", "success");
+                                        } else {
+                                            swal("Lo sentimos", responseJSON.mensaje, "error");
+                                        }
+                                    })
                             }
+                        });
+                } else {
+
+                    if (datos.esActivo == 0) {
+                        toastr.info("", "La Categoría seleccionada está oculta actualmente");
+                    } else {
+                        datos.esActivo = 0;
+
+                        headers.append("Content-type", "application/json; charset=utf-8");
+
+                        fetch("/Categoria/EditarCategoria", {
+                            method: "PUT",
+                            headers: headers,
+                            body: JSON.stringify(datos)
                         })
+                            .then(response => {
+                                $("#modalData").find("div.modal-content").LoadingOverlay("hide");
+                                return response.ok ? response.json() : Promise.reject(response);
+                            })
+                            .then(responseJSON => {
+                                if (responseJSON.estado) {
+                                    $("#modalData").modal("hide");
+                                    toastr.info("", "La categoría se ocultò al usuario correctamente!");
+                                    actualizarCategorias();
+                                } else {
+                                    toastr.error("Lo sentimos", responseJson.mensaje);
+                                }
+                            })
+                    }
                 }
+            });
+    }
+    else {
+        toastr.warning("No se tiene autorización para llevar a cabo esta acción, inicie sesión por favor");
+    }
 
-            }
-
-
-
-        });
+    
 });
 
 $(".seccionCategorias").on("click", ".product", function () {

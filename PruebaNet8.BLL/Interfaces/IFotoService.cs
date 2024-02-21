@@ -17,6 +17,6 @@ namespace PruebaNet8.BLL.Interfaces
 
         Task<bool> EliminarImagenProducto(int id);
 
-        //Task<ImagenesProducto> EditarImagen(int idImagen);
+        Task<bool> EditarImagenProducto(int idImagen, string nombreImagen, string urlImagen);
     }
 }

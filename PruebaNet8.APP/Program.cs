@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Drawing.Text;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,11 +60,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
+
+
 // Agregar el contexto de base de datos
 builder.Services.AddDbContext<PruebaIdentityProyectoContext>(
     opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("cadenaSQL")));
 
-builder.Services.AddAuthorization();
 
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddEntityFrameworkStores<PruebaIdentityProyectoContext>();
@@ -107,11 +115,11 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
+app.UseCors("politica");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors("politica");
 
 app.MapControllerRoute(
     name: "default",

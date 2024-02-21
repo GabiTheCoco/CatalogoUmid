@@ -9,9 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PruebaNet8.APP.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly IMapper _mapper;
@@ -26,11 +28,13 @@ namespace PruebaNet8.APP.Controllers
             _productoService = productoService;
             _fotoService = fotoService;
         }
- 
+
+
         public IActionResult Productos()
         {
             return View();
         }
+
 
         public IActionResult Categorias()
         {
@@ -55,15 +59,12 @@ namespace PruebaNet8.APP.Controllers
                 if (vmProductos.Count == 0)
                     return StatusCode(StatusCodes.Status204NoContent, null);
 
-
-
                 vmProductos = orden switch
                 {
                     "asc" => vmProductos.OrderBy(p => p.precio).ToList(),
                     "desc" => vmProductos.OrderByDescending(p => p.precio).ToList(),
                     _ => vmProductos // Default para otros casos
                 };
-
 
                 // Obtener imágenes principales en paralelo
                 var imagenTasks = vmProductos.Select(async item =>
@@ -81,7 +82,6 @@ namespace PruebaNet8.APP.Controllers
                     vmProductos[i].imagenProducto = imagenes[i];
                 }
 
-
                 return StatusCode(StatusCodes.Status200OK, vmProductos);
             }
             catch
@@ -90,22 +90,27 @@ namespace PruebaNet8.APP.Controllers
             }
         }
 
-        [EnableCors("politica")]
-        [HttpGet("Home/MostrarCategoriasyProductos/{orden}/")] 
 
-        public async Task<IActionResult> MostrarCategoriasyProductos(string orden)
+
+        [EnableCors("politica")]
+        [HttpGet("Home/MostrarCategoriasyProductos/{orden}/{estado}")] 
+
+        public async Task<IActionResult> MostrarCategoriasyProductos(string orden, int estado)
         {
             try
             {
                 List<VMCategoria> vmListaCategorias = _mapper.Map<List<VMCategoria>>(await _categoriaService.Lista());
 
                 if(vmListaCategorias.Count > 0) {
+
+                    vmListaCategorias = estado == 1 || estado == 0 ?
+                        vmListaCategorias.Where(c => c.EsActivo == estado).ToList() : vmListaCategorias;
+
+
                     foreach (var item in vmListaCategorias)
                     {
                         var productosCategoria = _mapper.Map<List<VMProductoMin>>(await _productoService.listaProductosCategoria(item.Id, true));
 
-                        if (productosCategoria.Count == 0)
-                            break;
 
                         // Ordenar productos por precio ascendente o descendente
                         productosCategoria = orden switch

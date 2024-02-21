@@ -74,31 +74,40 @@ namespace PruebaNet8.BLL.Implementaciones
 
         }
 
-        //public async Task<ImagenesProducto> EditarImagen(int idImagen, ImagenesProducto imagenEditada)
-        //{
-        //    ImagenesProducto imagen = await _repository.Obtener(p => p.Id == idImagen);
+        public async Task<bool> EditarImagenProducto(int idImagen, string nombreImagen, string urlImagen)
+        {
+            ImagenesProducto imagen = await _repository.Obtener(p => p.Id == idImagen);
 
-        //    if (imagen == null)
-        //        throw new TaskCanceledException();
+            if (imagen == null)
+                throw new TaskCanceledException();
 
-        //    try
-        //    {
-        //        imagen.Nombre = imagenEditada.Nombre;
-        //        imagen.UrlImagen = imagenEditada.UrlImagen;
+            try
+            {
+                var nombre_imagen_eliminar = imagen.Nombre;
 
-        //        bool respuesta = await _repository.Editar(imagen);
+                imagen.Nombre = nombreImagen;
+                imagen.UrlImagen = urlImagen;
 
-        //        if (!respuesta)
-        //            throw new TaskCanceledException();
-
-        //        return imagen;
-        //    }
-        //    catch
-        //    {
-        //        throw;
-        //    }
+                bool respuesta = await _repository.Editar(imagen);
 
 
-        //}
+                if (respuesta)
+                {
+                    await _firebaseService.EliminarStorage("carpeta_producto", nombre_imagen_eliminar);
+                }
+                else
+                {
+                    throw new TaskCanceledException();
+                }
+
+                return respuesta;
+            }
+            catch
+            {
+                throw;
+            }
+
+
+        }
     }
 }

@@ -6,12 +6,13 @@
 @section Estilos {
     <link rel="stylesheet" href="~/css/vistas/seccionCategorias.css" />
     <link rel="stylesheet" href="~/vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/styles.css" />
 }
 
 <section class="seccionCategorias">
 
     <div class="seccionFiltros">
-        <p class="opcionCrear">Crear Categoria</p>
+        <p class="opcionCrear oculto">Crear Categoria</p>
         <select class="filtroTipos">
             <option class="opcionCategorias" selected value="Categorias">Categorias</option>
             <option class="opcionProductos" value="Productos">Productos</option>
@@ -22,10 +23,10 @@
             <option class="opcionMenorPrecio" value="asc">Menor Precio</option>
             <option class="opcionMayorPrecio" value="desc">Mayor Precio</option>
         </select>
-@*         <select class="filtroEstado">
+        <select class="filtroEstado oculto">
             <option selected value="1">Activo</option>
             <option value="0">No Activo</option>
-        </select> *@
+        </select>
     </div>
 
     <div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">

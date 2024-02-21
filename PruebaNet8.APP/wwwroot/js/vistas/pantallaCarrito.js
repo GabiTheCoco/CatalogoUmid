@@ -1,6 +1,7 @@
-﻿$(document).ready(function () {
+﻿
+$(document).ready(function () {
 
-    const PRODUCTOS_CARRITO = JSON.parse(localStorage.getItem("productosCarrito")) || [];
+    let PRODUCTOS_CARRITO = JSON.parse(localStorage.getItem("productosCarrito")) || [];
 
 
     if (PRODUCTOS_CARRITO.length > 0) {
@@ -8,8 +9,31 @@
         $(".iconoCarrito").addClass("fa-solid fa-cart-arrow-down iconoCarrito");
     }
 
-    crearTarjetas(PRODUCTOS_CARRITO);
-    crearResumen(PRODUCTOS_CARRITO);
+    const arrayIds = JSON.stringify(PRODUCTOS_CARRITO.map(item => parseInt(item.idProducto))) || null;
+
+
+    $.ajax({
+        url: `/Carrito/ConsultarExistencia/`,
+        method: 'POST',
+        data: arrayIds,
+        contentType: "application/json",
+        success: function (datos) {
+            console.log(datos.objeto)
+
+            datos.objeto.forEach((item) => {
+                PRODUCTOS_CARRITO = PRODUCTOS_CARRITO.filter(p => p.idProducto != item);
+                console.log(PRODUCTOS_CARRITO);
+            })
+
+            crearTarjetas(PRODUCTOS_CARRITO);
+            crearResumen(PRODUCTOS_CARRITO);
+        },
+        error: function (error) {
+            toastr.error("Error al obtener los productos buscados");
+            console.log(error);
+        }
+    })
+
 })
 
 
@@ -101,11 +125,23 @@ $(".pantallaCarrito").on("click", ".btnPedido", function () {
 
     const texto = $(".seccionPedido").text();
 
-    const consultaCodificada = encodeURIComponent("Buen día! Me comunico para hacer la siguiente consulta: " + texto)
+
+    let textoModificado = texto
+        // Eliminar "Limpiar Carrito" y "Hacer Pedido"
+        .replace(/Limpiar Carrito|Hacer Pedido|Resumen de pedido/g, '')
+        // Reemplazar cada línea de producto
+        .replace(/([\w\s]+) x (\d+)\$ (\d+)/g, '$1 x $2 ----> $ $3\n')
+        .replace(/Total: \$(\d+)/g, 'Total: $ $1')
+        .replace(/\s+/g, ' ') // Eliminar espacios adicionales
+        .replace(/(Resumen de pedido\s+\$\s\d+)/g, '$1\n') // Agregar salto de línea después de cada bloque principal
+        .replace(/(Total:\s+\$\s\d+)/g, '\n\n$1');
+
+    console.log(textoModificado);
+
+    const consultaCodificada = encodeURIComponent("Buen día! Me comunico para consultar la disponibilidad de los siguientes productos: \n\n" + textoModificado);
 
 
-
-    window.open(`https://api.whatsapp.com/send/?phone=5493426123703&text=${consultaCodificada}&type= phone_number & app_absent=0`, "_blank");
+    window.open(`https://api.whatsapp.com/send/?phone=5493426123703&text=${consultaCodificada}&type=phone_number & app_absent=0`, "_blank");
 })
 
 $(".seccionProductos").on("click", ".btnEliminar", function () {

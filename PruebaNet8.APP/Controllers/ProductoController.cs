@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PruebaNet8.APP.Controllers
 {
-
     public class ProductoController : Controller
     {
         private readonly IMapper _mapper;
@@ -29,13 +29,14 @@ namespace PruebaNet8.APP.Controllers
             _firebaseService = firebaseService;
         }
 
+        [AllowAnonymous]
         public IActionResult pantallaProducto()
         {
             return View();
         }
 
         [EnableCors("politica")]
-        [HttpGet("MostrarProducto/{id}")]
+        [HttpGet("MostrarProducto/{id}"), AllowAnonymous]
 
         public async Task<IActionResult> MostrarProducto(int id) {
 
@@ -58,8 +59,7 @@ namespace PruebaNet8.APP.Controllers
 
         }
 
-        [DisableCors]
-        [HttpPost]
+        [HttpPost, Authorize]
 
         public async Task<IActionResult> CrearProducto([FromForm] List<IFormFile> fotos, [FromForm] string modelo)
         {
@@ -108,8 +108,7 @@ namespace PruebaNet8.APP.Controllers
         }
 
 
-        [DisableCors]
-        [HttpPut]
+        [HttpPut, Authorize]
 
         public async Task<IActionResult> Editar([FromForm] string modelo)
         {
@@ -136,8 +135,8 @@ namespace PruebaNet8.APP.Controllers
             return StatusCode(StatusCodes.Status200OK, respuesta);
         }
 
-        [DisableCors]
-        [HttpDelete("Eliminar/{id}")]
+
+        [HttpDelete("Eliminar/{id}"), Authorize]
 
         public async Task<IActionResult> Eliminar(int id)
         {
@@ -156,8 +155,8 @@ namespace PruebaNet8.APP.Controllers
             return StatusCode(StatusCodes.Status200OK, respuesta);
         }
 
-        [DisableCors]
-        [HttpPost("AgregarImagen/{id}")]
+
+        [HttpPost("AgregarImagen/{id}"), Authorize]
 
         public async Task<IActionResult> AgregarImagen([FromForm] IFormFile foto, int id)
         {
@@ -193,8 +192,8 @@ namespace PruebaNet8.APP.Controllers
             return StatusCode(StatusCodes.Status200OK, respuesta);
         }
 
-        [DisableCors]
-        [HttpDelete("EliminarImagen/{id}")]
+
+        [HttpDelete("EliminarImagen/{id}"), Authorize]
 
         public async Task<IActionResult> EliminarImagen(int id)
         {
@@ -213,17 +212,33 @@ namespace PruebaNet8.APP.Controllers
             return StatusCode(StatusCodes.Status200OK, respuesta);
         }
 
+        [HttpPut("/EditarImagen/{idImagen}"), Authorize]
 
+        public async Task<IActionResult> EditarImagen([FromForm] IFormFile foto, int idImagen)
+        {
+            GenericResponse<VMImagen> respuesta = new GenericResponse<VMImagen>();
 
+            try
+            {
+                string nombre_codificado = Guid.NewGuid().ToString("N");
+                string extension = Path.GetExtension(foto.FileName);
+                string nombreImagen = string.Concat(nombre_codificado, extension);
 
-        //[HttpPut("EditarImagen/{id}")]
+                Stream fotoStream = foto.OpenReadStream();
 
-        //public async Task<IActionResult> EditarImagen(int id)
-        //{
+                string urlImagen = await _firebaseService.SubirStorage(fotoStream, "carpeta_producto", nombreImagen);
 
-        //}
+                respuesta.Estado = await _fotoService.EditarImagenProducto(idImagen, nombreImagen, urlImagen);
+            }
+            catch(Exception ex)
+            {
+                respuesta.Estado = false;
+                respuesta.Mensaje = ex.Message;
+            }
+
+            return StatusCode(StatusCodes.Status200OK, respuesta);
+        }
 
     }
-
 
 }

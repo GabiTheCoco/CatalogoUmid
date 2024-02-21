@@ -8,6 +8,12 @@ $(document).ready(function () {
         $(".iconoCarrito").addClass("fa-solid fa-cart-arrow-down iconoCarrito");
     }
 
+    const Token = sessionStorage.getItem("Token") || null;
+
+    if (Token != null) {
+        $(".filtroEstado").removeClass("oculto");
+    }
+
     actualizarCatalogo();
 })
 

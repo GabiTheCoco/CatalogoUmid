@@ -7,9 +7,11 @@ using PruebaNet8.ENTITY;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PruebaNet8.APP.Controllers
 {
+
     public class CategoriaController : Controller
     {
         private readonly IMapper _mapper;
@@ -26,12 +28,13 @@ namespace PruebaNet8.APP.Controllers
             _fotoService = fotoService;
         }
 
+        [AllowAnonymous]
         public IActionResult pantallaCategoria()
         {
             return View();
         }
-        [EnableCors("politica")]
-        [HttpGet("MostrarProductosCategoria/{id}/{orden}/{estado}")]
+
+        [HttpGet("MostrarProductosCategoria/{id}/{orden}/{estado}"), AllowAnonymous]
 
         public async Task<IActionResult> MostrarProductosCategoria(int id, string orden, int estado)
         {
@@ -86,7 +89,7 @@ namespace PruebaNet8.APP.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
 
         public async Task<IActionResult> ListaCategorias()
         {
@@ -99,8 +102,7 @@ namespace PruebaNet8.APP.Controllers
 
         }
 
-        [DisableCors]
-        [HttpPost]
+        [HttpPost, Authorize]
 
         public async Task<IActionResult> CrearCategoria([FromBody] VMCategoria modelo)
         {
@@ -123,8 +125,7 @@ namespace PruebaNet8.APP.Controllers
             return StatusCode(StatusCodes.Status200OK, respuesta);
         }
 
-        [DisableCors]
-        [HttpPut]
+        [HttpPut, Authorize]
 
         public async Task<IActionResult> EditarCategoria([FromBody] VMCategoria modelo)
         {
@@ -147,8 +148,7 @@ namespace PruebaNet8.APP.Controllers
             return StatusCode(StatusCodes.Status200OK, respuesta);
         }
 
-        [DisableCors]
-        [HttpDelete]
+        [HttpDelete, Authorize]
 
         public async Task<IActionResult> EliminarCategoria(int Id)
         {

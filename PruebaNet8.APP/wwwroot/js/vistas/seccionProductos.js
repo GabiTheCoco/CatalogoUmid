@@ -2,7 +2,7 @@
     idProducto: 0,
     nombre: "",
     marca: "",
-    descripcion: "",
+    descripcion: '',
     idCategoria: 0,
     stock: "",
     precio: "",
@@ -13,21 +13,24 @@ $(document).ready(function () {
 
     const PRODUCTOS_CARRITO = JSON.parse(localStorage.getItem("productosCarrito")) || [];
 
-
     if (PRODUCTOS_CARRITO.length > 0) {
         $(".iconoCarrito").removeClass("fa-solid fa-cart-shopping");
         $(".iconoCarrito").addClass("fa-solid fa-cart-arrow-down iconoCarrito");
     }
 
     const valorBusqueda = sessionStorage.getItem("valorBusqueda") || "";
-
-    console.log("el valor de la busqueda es: " + valorBusqueda);
-
     $(".busquedaInput").val(valorBusqueda);
 
+    const Token = sessionStorage.getItem("Token") || null;
 
-    sessionStorage.setItem("ultimaPantalla", "Home/Productos");
+    if (Token != null) {
+        $(".opcionCrear").removeClass("oculto");
+        $(".filtroEstado").removeClass("oculto");
+    }
+
+
     
+    sessionStorage.setItem("ultimaPantalla", "Home/Productos");
     actualizarProductos();
     actualizarListaCategorias();
 })
@@ -43,8 +46,9 @@ function actualizarProductos() {
         dataType: 'JSON',
         success: function (datos) {
             $(".contenidoPrincipal").empty();
+            console.log(datos);
 
-            if (datos != null) {
+            if (datos != null && datos.length > 0) {
                 $(".labelError").remove();
                 mostrarProductos(datos, $(".contenidoPrincipal"));
             } else {
@@ -88,13 +92,17 @@ function mostrarModal(modelo = MODELO_BASE) {
     $("#cboEstado").val(modelo.esActivo);
     $("#txtImagen").val("");
 
+    const Token = sessionStorage.getItem("Token") || null;
+    console.log(Token);
 
-    $("#modalData").modal("show");
+    if (Token != null) {
+        $("#modalData").modal("show");
+    }
+    else {
+        toastr.warning("No se tiene autorización para llevar a cabo esta acción, inicie sesión por favor");
+    }
 }
 function mostrarProductos(productos, container) {
-
-    console.log(productos);
-
 
     for (const item of productos) {
 
@@ -121,14 +129,16 @@ $(".filtroOrden, .filtroEstado").on("change", function () {
 })
 
 $(".seccionProductos").on("click", ".opcionCrear", function () {
+
     mostrarModal();
+
 })
 
 $("#btnGuardar").click(function () {
-    const inputs = $(".input-validar").serializeArray();
+    const inputs = $('.input-validar').serializeArray();
     const inputs_nulos = inputs.filter((item) => item.value.trim() === "" || item.value === null);
 
-    const regexDefault = /^(?=.*[a-z])[A-Za-z0-9\d\s]{2,}$/;
+    const regexDefault = /^(?=.*[a-z])[A-Za-záéíóúñÑ0-9\d\s]{2,}$/;
     const regexDesc = /^[A-Za-záéíóúñÑ\d\s.,!€?'~*+&-_·":@|{}´$#$%()=¿]+$/;
     const regexNums = /^(?=.*\d)\d+$/;
 
@@ -144,11 +154,13 @@ $("#btnGuardar").click(function () {
 
     modelo["nombre"] = $("#txtNombre").val();
     modelo["marca"] = $("#txtMarca").val();
-    modelo["descripcion"] = $("#txtDescripcion").val();
+    modelo["descripcion"] = $('#txtDescripcion').val();
     modelo["idCategoria"] = $("#cboCategoria").val();
     modelo["stock"] = $("#txtStock").val();
     modelo["precio"] = $("#txtPrecio").val();
     modelo["esActivo"] = $("#cboEstado").val();
+
+    console.log(modelo.descripcion);
 
     console.log(regexDefault.test(modelo.nombre));
     console.log(regexDefault.test(modelo.marca));
@@ -164,10 +176,14 @@ $("#btnGuardar").click(function () {
 
         const formData = new FormData;
 
-        if (inputFotos[0].files.length > 0) {
+
+        if (inputFotos[0].files.length > 0 && inputFotos[0].files.length <= 4) {
             for (let i = 0; i < inputFotos[0].files.length; i++) {
                 formData.append("fotos", inputFotos[0].files[i]);
             }
+        } else {
+            toastr.warning("", "Solo se pueden ingresar un máximo de 4 fotos");
+            return;
         }
 
         formData.append("modelo", JSON.stringify(modelo));
@@ -176,8 +192,15 @@ $("#btnGuardar").click(function () {
 
         if (modelo.idProducto == 0) {
 
+            const Token = sessionStorage.getItem("Token") || null;
+
+            const headers = new Headers();
+
+            headers.append("Authorization", Token);
+
             fetch("/Producto/CrearProducto", {
                 method: "POST",
+                headers: headers,
                 body: formData
             })
                 .then(response => {
