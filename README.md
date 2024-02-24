@@ -5,12 +5,12 @@
 
 [TOC]
 
-#Instalación
+# Instalación
 Para comenzar, clone este repositorio dentro de su máquina local o repositorio local utilizando el siguiente comando:  
 
 `git clone https://github.com/GabiTheCoco/CatalogoUmid.git`
 
-#Requisitos del entorno
+# Requisitos del entorno
 
 Este proyecto utiliza .NET Framework 8.0.200 (Viene incluído en el Visual Studio 17.9.0) o se puede descargar en [este enlace](https://dotnet.microsoft.com/es-es/download/dotnet/8.0).
 
@@ -22,7 +22,7 @@ También utiliza los siguientes programas:
 
 - Los paquetes de NuGet y las dependencias necesarias están dentro del proyecto mismo.
 
-#Configuración de la Base de Datos
+# Configuración de la Base de Datos
 Una vez clonado el proyecto, se debe crear una Base de Datos para almacenar los registros pertinentes durante la ejecución de la aplicación.
 
 Esto se puede hacer de dos maneras:
@@ -78,7 +78,7 @@ Dentro de la capa de aplicación, modificar la cadena de conexión una vez cread
 		  "cadenaSQL": "Server=(tuServidor);Database=(tuBaseDeDatos);Integrated Security=true;MultipleActiveResultSets=true;TrustServerCertificate=True"
 		}
 
-#Configuración del servicio de Firebase Storage
+# Configuración del servicio de Firebase Storage
 
 Este proyecto utiliza el servicio Firebase Storage para guardar las imágenes de los productos y almacenarlas, se debe configurar un nuevo proyecto de Firebase con una cuenta de Google de la siguiente manera:
 
@@ -122,8 +122,8 @@ Luego de eso, se debe acceder a la base de datos creada anteriormente y ejecutar
 	('Firebase_Storage', 'carpeta_producto' ,'IMAGENES_PRODUCTOS');
 
 - La ruta de acceso al servicio no debe tener la parte del "gs://" en su cadena al ingresar en la base de datos, tenerlo en cuenta.
-#Video Demostración
+# Video Demostración
 Se creó un video en el que se explica las distinas funcionalidades de la aplicación, tanto las del Usuario corriente como las del Usuario Administración, encontrándose en [este enlace](https://youtu.be/5977AhUyQ0s)
 
-#Ejecución del proyecto
+# Ejecución del proyecto
 Se puede ejecutar el proyecto abriendo el archivo CatalogoUmid.sln y ejecutando la solución con el proyecto de inicio en la capa de aplicación CatalogoUmid.APP 
